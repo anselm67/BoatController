@@ -1,0 +1,98 @@
+WARNING Models created here work with the BoatController app in android/BoatController
+Simply copy the compiled model into 
+    BoatController/app/src/pytorch/assets/banks.ptl
+=======================================================================================
+
+20241229 - Usage summary
+
+Here is an example of how to augment the dataset:
+    # ./mkframes.py -f 30 -t /data/river/tags -d /data/river/newtags /data/river/movies/gelise-1.mp4
+    # ./client.py --datadir /data/river/newtags 
+    # ./tagger.py /data/river/newtags/*jpg
+    Merge the content newtag/  into the main tag/ directory.
+
+Training & predicting
+    # ./main.py -c catalog/ train --help
+    # ./main.py -c catalog/ predict BasicModel-k9x9-f32:16:8:4-conv /data/river/movies/seine4.mp4
+    
+
+TODO
+- IoU for loss function
+- Integrate tqdm
+- Generate final model with --seed 0 to optimize it
+
+Varying the positional layer position in the netowrk:
+$ ./client.py -c positional-at-beginning rank /data/river/test-tags
+BasicModel-k9x9-f32:16:8:4-conv	93.95
+BasicModel-k9x9-f32:16:8:4-linear	93.44
+
+$ ./client.py -c positional-at-end rank /data/river/test-tags
+BasicModel-k9x9-f32:16:8:4-conv	93.91
+BasicModel-k9x9-f32:16:8:4-linear	93.37
+
+Varying the positional layers:
+
+$ ./client.py -c positional-parameters/ rank /data/river/test-tags/
+BasicModel-k9x9-f32:16:8:4-conv	94.41
+BasicModel-k9x9-f32:16:8:4-linear	94.36
+$ ./client.py --catalog height-only-positional rank /data/river/test-tags
+BasicModel-k9x9-f32:16:8:4	92.62
+BanksModel-k5x5-codec16:16	91.39
+$ ./client.py --catalog height-and-width-positional rank /data/river/test-tags
+BasicModel-k9x9-f32:16:8:4	93.03
+BanksModel-k5x5-codec16:16	91.16
+
+
+20241221 - Tools
+Two main tools here:
+
+# ./train.py --catalog <directory> train --epochs N --checkpoint C
+runs training of the models defined  in train.py::train() for N epochs, 
+saving state every C epochs.
+
+# ./client.py --catalog <direcory> 
+runs various tasks and metrics through the model.
+
+Varying the amount of random crops in the dataset:
+
+
+$ ./client.py --catalog nocrop rank /data/river/test-tags
+BasicModel-k5x5-f32:16:8	92.38
+BanksModel-k3x3-codec16:16	92.15
+BanksModel-k5x5-codec16:16	91.85
+BasicModel-k3x3-f32:16:8	91.51
+BanksModel-k7x7-codec16:16	91.10
+BasicModel-k7x7-f32:16:8	91.01
+
+$ ./client.py --catalog half-crop rank /data/river/test-tags
+BasicModel-k8x8-f32:16:8	93.19
+BasicModel-k8x8-f32:16:16	93.11
+BasicModel-k9x9-f16:32:64	93.03
+BasicModel-k8x8-f32:32:32	92.99
+BasicModel-k9x9-f32:16:8	92.98
+BasicModel-k8x8-f16:32:64	92.97
+BasicModel-k9x9-f32:32:32	92.33
+BasicModel-k5x5-f32:16:8	92.29
+BasicModel-k9x9-f32:16:16	92.29
+BasicModel-k7x7-f32:16:8	91.94
+BasicModel-k7x7-f16:32:64	91.92
+BanksModel-k7x7-codec16:16	91.82
+BanksModel-k5x5-codec16:32	91.81
+BanksModel-k5x5-codec16:16	91.78
+BanksModel-k9x9-codec16:16	91.56
+BanksModel-k3x3-codec16:16	91.37
+BanksModel-k8x8-codec16:16	91.02
+BasicModel-k3x3-f32:16:8	90.74
+
+
+$ ./client.py --catalog full-crop rank /data/river/test-tags
+Basic4Model-k9x9-f32:16:8:4	93.21
+Basic4Model-k8x8-f32:16:8:4	93.04
+BanksModel-k5x5-codec16:16	92.09
+BasicModel-k7x7-f32:16:8	92.02
+BanksModel-k5x5-codec16:32	91.64
+BasicModel-k8x8-f32:16:8	91.63
+BanksModel-k3x3-codec16:16	91.49
+BanksModel-k7x7-codec16:16	91.31
+BasicModel-k5x5-f32:16:8	91.20
+BasicModel-k3x3-f32:16:8	90.79

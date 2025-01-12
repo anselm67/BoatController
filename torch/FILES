@@ -1,0 +1,21 @@
+client.py 
+    Inference and eval.
+dataset.py
+    Data loading and preparation, used by both client and train.
+jitest.py
+    Tests compiled models before copying to android/BoatController
+main.py
+    Main executable, supports all the commands defined in the package.
+mkframes.py
+    Extract frames from mp4 files for use in tagging.
+model.py
+    Catalog support for multi-model runs and model definitions.
+tagger.py
+    Manual image tagging tool
+train.py
+    All the code related to training and compiling models, include 
+    commands for listing the catalog and summarizing models.
+utils.py
+    Utility functions.
+viewer.py
+    Image and label viewer.

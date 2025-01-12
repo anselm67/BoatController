@@ -1,0 +1,41 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "jitest.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "jitest.py",
+            "console": "integratedTerminal",
+            "args": [
+                "banks.ptl",
+                "/data/river/tags/extra-seine-1-000120.jpg"
+            ]
+        },
+        {
+            "name": "Train.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "train.py",
+            "console": "integratedTerminal",
+            "args": [
+                "-c", "xxx",
+                "--seed", "0",
+                "train",
+            ]
+        },
+        {
+            "name": "Client.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "client.py",
+            "console": "integratedTerminal",
+            "args": [
+                "-m",
+                "BasicModel-k7x7-f32:16:8:4",
+                "predict",
+                "/data/river/movies/extra-seine-1.mp4",
+            ]
+        }
+    ]
+}
