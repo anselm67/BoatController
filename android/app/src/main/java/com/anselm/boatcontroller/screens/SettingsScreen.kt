@@ -276,6 +276,36 @@ private fun ClassifierSettings(viewModel: SettingsScreenViewModel) {
 }
 
 @Composable
+fun EditUseMockController(viewModel: SettingsScreenViewModel) {
+    val appViewModel = LocalApplicationViewModel.current
+
+    Row(
+        Modifier
+            .padding(vertical = 8.dp)
+            .fillMaxWidth()) {
+        Text("Debug Options", fontWeight = FontWeight.Bold)
+    }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(text = "Use mock controller (debug)?")
+        Switch(
+            checked = viewModel.useMockController,
+            onCheckedChange = {
+                viewModel.useMockController = ! viewModel.useMockController
+                appViewModel.updatePreferences { it.copy(
+                    useMockController = viewModel.useMockController
+                ) }
+            }
+        )
+    }
+}
+
+@Composable
 fun SettingsScreen(viewModel: SettingsScreenViewModel = viewModel()) {
     val appViewModel = LocalApplicationViewModel.current
     val state by appViewModel.applicationState.collectAsState()
@@ -296,5 +326,6 @@ fun SettingsScreen(viewModel: SettingsScreenViewModel = viewModel()) {
         HorizontalDivider()
         ClassifierSettings(viewModel)
         HorizontalDivider()
+        EditUseMockController(viewModel)
     }
 }

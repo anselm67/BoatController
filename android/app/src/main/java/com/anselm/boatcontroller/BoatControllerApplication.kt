@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import com.anselm.boatcontroller.controller.BLEController
 import com.anselm.boatcontroller.controller.Controller
 import com.anselm.boatcontroller.controller.Controller.Companion.ARM_LENGTH
 import com.anselm.boatcontroller.controller.ControllerMock
@@ -22,7 +23,7 @@ import java.io.IOException
 import kotlin.math.abs
 
 class BoatControllerApplication: Application() {
-    var controller: Controller = ControllerMock() // BLEController()
+    lateinit var controller: Controller
     lateinit var classifier: Classifier
     private lateinit var captureDirectory: File
     lateinit var prefs: BoatControllerPreferences
@@ -38,6 +39,7 @@ class BoatControllerApplication: Application() {
         super.onCreate()
         app = this
         prefs = loadPreferences()
+        controller = if ( prefs.useMockController ) ControllerMock() else BLEController()
         // Initiates the classifier.
         @Suppress("KotlinConstantConditions")
         val className = when(BuildConfig.FLAVOR) {
@@ -65,8 +67,20 @@ class BoatControllerApplication: Application() {
     fun updatePreferences(change: (BoatControllerPreferences) -> BoatControllerPreferences)
         : BoatControllerPreferences
     {
+        val useMockController = prefs.useMockController
         prefs = change(prefs)
         prefs.save(applicationContext.getSharedPreferences("preferences", MODE_PRIVATE))
+        if ( prefs.useMockController != useMockController ) {
+            controller.disconnect()
+            if ( prefs.useMockController ) {
+                Log.i(TAG, "Switching mock controller to MokController")
+                controller = ControllerMock()
+            } else {
+                Log.i(TAG, "Switching mock controller to BLEController")
+                controller = BLEController()
+            }
+
+        }
         return prefs
     }
 

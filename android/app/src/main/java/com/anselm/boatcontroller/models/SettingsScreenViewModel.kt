@@ -14,6 +14,7 @@ class SettingsScreenViewModel : ViewModel() {
     var analysisDelayMillis by mutableLongStateOf(app.prefs.analysisDelayMillis)
     var alwaysOn by mutableStateOf(app.prefs.alwaysOn)
     var armIndex by mutableIntStateOf(if (app.prefs.leftMount) 0 else 1)
+    var useMockController by mutableStateOf(app.prefs.useMockController)
 
     // Progress report for exporting images and labels.
     var showProgress by mutableStateOf(false)
