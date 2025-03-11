@@ -30,11 +30,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.anselm.boatcontroller.BoatControllerApplication.Companion.app
@@ -173,6 +176,20 @@ fun Goto(status: Status) {
 }
 
 @Composable
+fun DebugWarning() {
+    if ( app.prefs.useMockController  ) {
+        Row(
+            modifier = Modifier.padding(10.dp).fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center) {
+            Text(
+                text = "Mock Controller",
+                fontWeight = FontWeight.Bold, color=Color.Red, fontSize=24.sp
+            )
+        }
+    }
+}
+
+@Composable
 fun NavigationScreen(viewModel: NavigationScreenViewModel = viewModel<NavigationScreenViewModel>()) {
     val appViewModel = LocalApplicationViewModel.current
     val tag = viewModel.classifierPreviewModel.tagFlow.collectAsState()
@@ -248,6 +265,7 @@ fun NavigationScreen(viewModel: NavigationScreenViewModel = viewModel<Navigation
             if (tag.value == null) "" else "%1.2f".format(tag.value!!.first),
         )
         Controls()
+        DebugWarning()
         Spacer(Modifier.weight(1f))
         if (status.isConnected) {
             Status(status)
